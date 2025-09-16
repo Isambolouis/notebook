@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notebook</title>
+
+  <!-- Lien vers le manifeste -->
+  <link rel="manifest" href="/manifest.json">
+  
+  <!-- Icône (obligatoire pour installation sur mobile) -->
+  <link rel="icon" type="image/png" href="/icon-192.png">
+</head>
+<body>
+  <div id="main"></div>
+    <script src="./notebook.bundle.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+    .then((registration) => {
+      console.log('Service Worker enregistré 🔥');
+
+      // Ecouter s'il y a une nouvelle version du Service Worker
+      registration.addEventListener('updatefound', () => {
+        const newWorker = registration.installing;
+        console.log('Nouvelle version détectée 🆕');
+
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed') {
+            if (navigator.serviceWorker.controller) {
+              // Il y avait un ancien SW actif => Mise à jour dispo !
+              console.log('Nouvelle version disponible ! 🚀');
+              // Tu peux afficher une notification, un bouton "Mettre à jour" etc.
+              // Exemple simple : recharger automatiquement
+              window.location.reload();
+            } else {
+              // Pas de SW actif avant => première installation
+              console.log('Service Worker installé pour la première fois.');
+            }
+          }
+        });
+      });
+    })
+    .catch((error) => console.error('Erreur Service Worker:', error));
+}
+
+  </script>
+
+  
+</body>
+</html>
